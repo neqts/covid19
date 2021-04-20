@@ -1,14 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import Loading from './Loading';
-import CovidMap from './CovidMap';
-import Legend from './Legend';
+import React, { useState, useEffect } from "react";
 
-
+import Loading from "./Loading";
+import CovidMap from "./CovidMap";
+import LoadCountriesTask from "../tasks/LoadCountriesTasks";
+import Legend from "./Legend";
+import legendItems from "../entities/LegendItems";
 
 const Covid19 = () => {
-    const [countries, setCountries] = useState(['Canada']);
+  const [countries, setCountries] = useState([]);
 
-    return <div>{countries.length === 0 ? <Loading /> : <div><CovidMap /><Legend /></div>}</div>
-}
+  const legendItemsReverse = [...legendItems].reverse();
 
-export default Covid19
+  const load = () => {
+    console.log("load");
+    const loadCountriesTask = new LoadCountriesTask();
+    loadCountriesTask.load((countries) => setCountries(countries));
+  };
+
+  useEffect(load, []);
+
+  return (
+    <div>
+      {countries.length === 0 ? (
+        <Loading />
+      ) : (
+        <div>
+          <CovidMap countries={countries} />
+          <Legend legendItems={legendItemsReverse} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Covid19;
